@@ -1,6 +1,6 @@
 {
   "name": "wip-board",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Shows the open multi-session work in a wip folder: a /wip pane with each item's next step, and a one-line count above the prompt",
   "author": {
     "name": "chaneuijung"

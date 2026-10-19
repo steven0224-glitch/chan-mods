@@ -4,7 +4,7 @@ Claude Code [mods](https://code.claude.com/docs/en/plugins/mods/overview) I use 
 
 | mod | what it adds | version |
 |---|---|---|
-| [wip-board](./wip-board) | `/wip` pane of open multi-session work and a one-line count above the prompt | 0.3.0 |
+| [wip-board](./wip-board) | `/wip` pane of open multi-session work and a one-line count above the prompt | 0.3.1 |
 | [tier-guard](./tier-guard) | Warns when a subagent runs on the wrong model tier or the main loop switches model/effort mid-session; `/tier` | 0.1.0 |
 | [lessons-recall](./lessons-recall) | Attaches lesson notes that share rare words with each prompt as context; `/lessons` | 0.2.0 |
 

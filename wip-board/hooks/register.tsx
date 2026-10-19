@@ -131,12 +131,19 @@ export const register: Register = (on, options) => {
               return (
                 <Box key={item.file} flexDirection="column" paddingLeft={2}>
                   <Box flexDirection="row" columnGap={1}>
-                    {/* bold, not weight: weight needs 2.1.299+ and the terminal CLI may be older */}
-                    <Text bold wrap="truncate-end">{item.title}</Text>
-                    <Text color={kind === 'stale' ? 'yellow' : undefined} dimColor={kind !== 'stale'}>
-                      {ageLabel(days)}
-                    </Text>
-                    <Text dimColor wrap="truncate-end">{item.file.replace(/\.md$/, '')}</Text>
+                    {/* Only the title gives way when the pane is narrow; age, slug and button keep their width */}
+                    <Box flexGrow={1} flexShrink={1}>
+                      {/* bold, not weight: weight needs 2.1.299+ and the terminal CLI may be older */}
+                      <Text bold wrap="truncate-end">{item.title}</Text>
+                    </Box>
+                    <Box flexShrink={0}>
+                      <Text color={kind === 'stale' ? 'yellow' : undefined} dimColor={kind !== 'stale'}>
+                        {ageLabel(days)}
+                      </Text>
+                    </Box>
+                    <Box flexShrink={0}>
+                      <Text dimColor>{item.file.replace(/\.md$/, '').slice(0, 28)}</Text>
+                    </Box>
                     <Button
                       key={'go-' + item.file}
                       label="이어서"
