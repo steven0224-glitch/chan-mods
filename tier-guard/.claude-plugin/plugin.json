@@ -1,0 +1,14 @@
+{
+  "name": "tier-guard",
+  "version": "0.1.0",
+  "description": "Watches subagent model routing and mid-session model/effort switches against the CLAUDE.md §2 tier rules; warns by default, enforces when asked",
+  "author": { "name": "chaneuijung" },
+  "userConfig": {
+    "enforce": {
+      "type": "boolean",
+      "title": "Enforce",
+      "description": "Off: warn only. On: run built-in Explore on haiku, and raise a task-worker request's effort from low to medium.",
+      "default": false
+    }
+  }
+}

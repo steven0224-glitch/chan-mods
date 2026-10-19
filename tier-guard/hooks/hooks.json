@@ -1,0 +1,4 @@
+{
+  "description": "The tier-guard hooks module",
+  "modules": ["./register.ts"]
+}

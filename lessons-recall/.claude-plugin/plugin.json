@@ -1,0 +1,16 @@
+{
+  "name": "lessons-recall",
+  "version": "0.2.0",
+  "description": "Matches each prompt against a folder of lesson notes (file slug + title) and attaches the top related files as context Claude reads; /lessons shows the index",
+  "author": {
+    "name": "chaneuijung"
+  },
+  "userConfig": {
+    "dir": {
+      "type": "string",
+      "title": "Lessons directory",
+      "description": "Folder of one-lesson-per-file Markdown notes. ~ means the home directory.",
+      "default": "~/.claude/lessons"
+    }
+  }
+}

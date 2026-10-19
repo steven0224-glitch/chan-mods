@@ -1,0 +1,26 @@
+{
+  "name": "chan-mods",
+  "owner": {
+    "name": "chaneuijung"
+  },
+  "metadata": {
+    "description": "Personal Claude Code mods: wip-board (open work above the prompt), tier-guard (subagent model routing), lessons-recall (related lesson notes per prompt)"
+  },
+  "plugins": [
+    {
+      "name": "wip-board",
+      "source": "./wip-board",
+      "description": "/wip pane of open multi-session work and a one-line count above the prompt"
+    },
+    {
+      "name": "tier-guard",
+      "source": "./tier-guard",
+      "description": "Warns when subagent models or mid-session model/effort switches break the CLAUDE.md §2 tier rules; /tier lists spawns"
+    },
+    {
+      "name": "lessons-recall",
+      "source": "./lessons-recall",
+      "description": "Attaches the lesson notes that share rare words with each prompt as context Claude reads; /lessons shows the index"
+    }
+  ]
+}

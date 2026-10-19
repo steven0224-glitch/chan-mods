@@ -1,0 +1,4 @@
+{
+  "description": "The lessons-recall hooks module",
+  "modules": ["./register.ts"]
+}

@@ -1,0 +1,4 @@
+{
+  "description": "The wip-board hooks module",
+  "modules": ["./register.tsx"]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "wip-board",
+  "version": "0.2.0",
+  "description": "Shows the open multi-session work in a wip folder: a /wip pane with each item's next step, and a one-line count above the prompt",
+  "author": {
+    "name": "chaneuijung"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "dir": {
+      "type": "string",
+      "title": "WIP directory",
+      "description": "Folder of one-task-per-file Markdown notes with a 다음: line. ~ means the home directory.",
+      "default": "~/.claude/wip"
+    }
+  }
+}
