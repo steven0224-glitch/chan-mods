@@ -45,7 +45,7 @@ test('the band counts open items, README excluded, on every surface', async ($, 
   await clock.settle()
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ plugin: 'wip-board', surface, component: 'AbovePrompt', props: BAND_PROPS })
-    expect(await ui.find({ type: 'Text', text: /wip 2 · 대기 1/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /wip 2 · ◌ 대기 1/ })).toBeDefined()
     await ui.unmount()
   }
 })
@@ -62,7 +62,8 @@ test('the pane lists items, held last, and 이어서 fills the prompt', async ($
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ plugin: 'wip-board', surface, component: 'Pane', requestId: 'wip-board', props: PANE_PROPS })
     expect(await ui.find({ type: 'Text', text: '학업계획서' })).toBeDefined()
-    expect(await ui.find({ type: 'Text', text: /다음: 수험번호 입력/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /→ 수험번호 입력/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /◌ 대기 1/ })).toBeDefined()
     await ui.press({ key: 'go-grad.md' })
     await ui.unmount()
   }
@@ -77,7 +78,7 @@ test('after /clear the band reloads the list without a new session.start', async
   await $.classic.SessionStart({ source: 'clear' })
   await clock.settle()
   const ui = await $.ui.mount({ plugin: 'wip-board', surface: 'terminal', component: 'AbovePrompt', props: BAND_PROPS })
-  expect(await ui.find({ type: 'Text', text: /wip 2 · 대기 1/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /wip 2 · ◌ 대기 1/ })).toBeDefined()
 })
 
 test('an unreadable file is skipped, the rest still show', async ($, on) => {

@@ -2,15 +2,12 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { WipItem } from '../types'
-import { ageDays, bandLine, parseWip, sortItems } from './parse.ts'
+import { COLOR, HINT, KINDS, LABEL, MARK, ageDays, ageLabel, bandLine, parseWip, sortItems } from './parse.ts'
 
 const PANE = 'wip-board'
 const DEFAULT_DIR = '~/.claude/wip'
 const items = atom({ plugin: 'wip-board', key: 'items' } as const, [] as WipItem[])
 const isBandHidden = atom({ plugin: 'wip-board', key: 'isBandHidden' } as const, false)
-
-const MARK = { active: '●', stale: '⚠', nonext: '?', held: '◌' } as const
-const COLOR = { active: 'green', stale: 'yellow', nonext: 'red', held: 'gray' } as const
 
 // `~` means the home directory, as in the shell
 async function resolveDir($: EngineInterface, dir: string): Promise<string | null> {
@@ -113,34 +110,60 @@ export const register: Register = (on, options) => {
     const { Box, Text, Button } = $.ui.resolve(e)
     const list = await read($, items)
     const now = await $.clock.now()
-    if (list.length === 0) return <Text dimColor>열린 wip 없음</Text>
+    if (list.length === 0) return <Text dimColor>열린 wip 없음 — 멀티세션 작업을 시작하면 ~/.claude/wip/&lt;슬러그&gt;.md 로 생김</Text>
+
+    // One section per kind, needs-attention first; empty sections are skipped
+    const sections = KINDS.map(kind => ({ kind, rows: list.filter(i => i.kind === kind) })).filter(s => s.rows.length > 0)
 
     return (
       <Box flexDirection="column" rowGap={1}>
-        <Text dimColor>{bandLine(list)} · Enter=프롬프트에 이어서 넣기 · Esc 닫기</Text>
-        {list.map(item => (
-          <Box key={item.file} flexDirection="column">
+        <Text dimColor>열린 작업 {list.length}개 · Tab 으로 이어서 선택 → Enter 가 프롬프트에 넣음 · Esc 닫기</Text>
+        {sections.map(({ kind, rows }) => (
+          <Box key={kind} flexDirection="column">
             <Box flexDirection="row" columnGap={1}>
-              <Text color={COLOR[item.kind]}>{MARK[item.kind]}</Text>
-              {/* bold, not weight: weight needs 2.1.299+ and the terminal CLI may be older */}
-              <Text bold wrap="truncate-end">{item.title}</Text>
-              <Text dimColor>{ageDays(item.mtimeMs, now)}일</Text>
-              <Button
-                key={'go-' + item.file}
-                label="이어서"
-                plain
-                onPress={async () => {
-                  const text = `wip/${item.file} 읽고 다음 행동 이어서 진행`
-                  const r = await $.prompt.fill({ text })
-                  // Under a dialog the prompt box takes nothing: say what to type instead
-                  if (!r.isFilled) $.ui.toast('프롬프트에 넣지 못함 — 직접 입력: ' + text)
-                }}
-              />
+              <Text color={COLOR[kind]} bold>
+                {MARK[kind]} {LABEL[kind]} {rows.length}
+              </Text>
+              {HINT[kind] ? <Text dimColor>— {HINT[kind]}</Text> : null}
             </Box>
-            <Text dimColor wrap="truncate-end">
-              {'  '}
-              {item.next ? '다음: ' + item.next : '다음: 줄 없음 — 파일 형식 확인'}
-            </Text>
+            {rows.map(item => {
+              const days = ageDays(item.mtimeMs, now)
+              return (
+                <Box key={item.file} flexDirection="column" paddingLeft={2}>
+                  <Box flexDirection="row" columnGap={1}>
+                    {/* bold, not weight: weight needs 2.1.299+ and the terminal CLI may be older */}
+                    <Text bold wrap="truncate-end">{item.title}</Text>
+                    <Text color={kind === 'stale' ? 'yellow' : undefined} dimColor={kind !== 'stale'}>
+                      {ageLabel(days)}
+                    </Text>
+                    <Text dimColor wrap="truncate-end">{item.file.replace(/\.md$/, '')}</Text>
+                    <Button
+                      key={'go-' + item.file}
+                      label="이어서"
+                      plain
+                      onPress={async () => {
+                        const text = `wip/${item.file} 읽고 다음 행동 이어서 진행`
+                        const r = await $.prompt.fill({ text })
+                        // Under a dialog the prompt box takes nothing: say what to type instead
+                        if (!r.isFilled) $.ui.toast('프롬프트에 넣지 못함 — 직접 입력: ' + text)
+                      }}
+                    />
+                  </Box>
+                  {item.next ? (
+                    <Text dimColor wrap="truncate-end">
+                      {'  → '}
+                      {item.next}
+                    </Text>
+                  ) : (
+                    <Text color="red" dimColor wrap="truncate-end">
+                      {'  → 다음: 줄 없음 — '}
+                      {item.file}
+                      {' 에 「다음: …」 한 줄 추가'}
+                    </Text>
+                  )}
+                </Box>
+              )
+            })}
           </Box>
         ))}
       </Box>

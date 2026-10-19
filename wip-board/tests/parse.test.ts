@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { bandLine, parseWip, sortItems } from '../hooks/parse.ts'
+import { ageLabel, bandLine, parseWip, sortItems } from '../hooks/parse.ts'
 
 const NOW = Date.UTC(2026, 9, 19)
 const daysAgo = (d: number) => NOW - d * 86_400_000
@@ -37,5 +37,9 @@ test('sort puts stale first and held last; band line counts each kind', () => {
     parseWip('old.md', '# o\n다음: go', daysAgo(20), NOW),
   ])
   expect(list.map(i => i.file)).toEqual(['old.md', 'act.md', 'held.md'])
-  expect(bandLine(list)).toBe('wip 3 · 대기 1 · 14일↑ 1')
+  expect(bandLine(list)).toBe('wip 3 · ⚠ 오래됨 1 · ◌ 대기 1')
+})
+
+test('age label reads as a person says it', () => {
+  expect(['오늘', '어제', '5일 전', '2주 전', '3달 전']).toEqual([0, 1, 5, 14, 100].map(ageLabel))
 })
